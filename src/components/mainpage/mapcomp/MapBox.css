@@ -1,0 +1,20 @@
+.mapbox {
+  position: sticky;
+  top: 3.7rem;
+  z-index: 10;
+  height: 42vh;
+  width: 100%;
+  border: 1px solid var(--gray-600);
+  box-sizing: border-box;
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mapbox-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}

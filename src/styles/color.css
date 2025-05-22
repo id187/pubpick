@@ -1,0 +1,21 @@
+:root {
+  --gray-50: #f6f6f6;
+  --gray-100: #efefef;
+  --gray-200: #e1e1e1;
+  --gray-200: #e1e1e1;
+  --gray-400: #b1b3b3;
+  --gray-500: #afafaf;
+  --gray-600: #6e6e6e;
+  --gray-700: #5a5a5a;
+  --gray-800: #343434;
+  --gray-900: #202020;
+  --red-600: #af272f;
+  --red-900: #9e2b2f;
+  --pink-main: #f15987;
+  --coral-main: #ff6f61;
+  --coral-200: #ffcbc7;
+  --bg-color: #fff1be;
+  --green-main: #0bb68c;
+  --gray-color: #7d7d7d;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+}

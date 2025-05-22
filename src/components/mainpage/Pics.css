@@ -1,0 +1,12 @@
+
+.pics-container {
+    /* 스크롤 가능한 영역을 만들고 싶다면 아래와 같이 처리 */
+    width: 100%;  
+    height: 42vh;
+    /* max-height: calc(100vh - 100px);  */
+    overflow-y: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+    background-color: var(--gray-50); /* 필요 시 배경색 조절 */
+  }
+  
