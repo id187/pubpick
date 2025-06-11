@@ -37,10 +37,10 @@ const Pics = ({ data, selectedIndex, onSelect }) => {
           index = {idx}
           id={item.id}
           name={item.name}
-          rating={item.rating}
-          reviewCount={item.reviewCount}
-          tags={item.tags}
-          imageSrc={item.imageSrc}
+          rating={item.score}
+          reviewCount={item.totalReviews}
+          tags={item.tagList}
+          imageSrc={item.imagePath || "/img/store-default.jpg"} // Default image if none provided
           //imageSrc = {imgsrc}
           isSelected = {selectedIndex === idx}
           onSelect = {onSelect}

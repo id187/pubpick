@@ -31,8 +31,8 @@ const Map = ({data, selectedIndex, onMarkerClick }) => {
             map={map}
             position={
               new window.kakao.maps.LatLng(
-                item.position.lat,
-                item.position.lng
+                item.latitude,
+                item.longitude
               )
             }
             index={idx}

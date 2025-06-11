@@ -1,14 +1,28 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from "react";
 import { FaCamera, FaMapMarkerAlt } from 'react-icons/fa';
-import { picData } from '../components/mainpage/picData';
 import { useLocation } from "react-router-dom";
-import PlaceSearchModal from "../components/PlaceSearchModal";
+import { instance } from "../api/instance"; 
 
 const ReviewWrite = () => {
   const navigate = useNavigate();
   const [image, setImage] = useState(null);
+  const [comment, setComment] = useState("");
+  const [placeList, setPlaceList] = useState([]);
+
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const res = await instance.get("/place");
+        setPlaceList(res.data.data);
+      } catch (err) {
+        console.error("장소 목록 불러오기 실패", err);
+      }
+    };
+  
+    fetchPlaces();
+  }, []);
 
   const handleImageChange = (e) => {
     const file = e.target.files?.[0];
@@ -17,7 +31,7 @@ const ReviewWrite = () => {
       setImage(url);
     }
   };
-  const [showModal, setShowModal] = useState(false); // 🔥 추가
+  const [showModal, setShowModal] = useState(false);
 
   const handleSelectPlace = (place) => {
     setSelectedPlace(place);
@@ -36,13 +50,9 @@ const ReviewWrite = () => {
 
   const location = useLocation();
   const fromPath = location.state?.from; // 예: "/restaurant/1"
+  const token = localStorage.getItem("accessToken");
 
-  const idFromURL = fromPath?.split("/restaurant/")[1];
-  const selectedFromData = picData.find(
-    (item) => item.id === Number(idFromURL)
-  );
-
-  const [selectedPlace, setSelectedPlace] = useState(selectedFromData || null);
+  const [selectedPlace, setSelectedPlace] = useState(null);
   const [openList, setOpenList] = useState(false);
   const [title, setTitle] = useState("");
   const [selectedTags, setSelectedTags] = useState([]);
@@ -58,6 +68,51 @@ const ReviewWrite = () => {
     }
   };
 
+  const handleSubmit = async () => {
+    if (!selectedPlace?.id) {
+      alert("장소를 선택해주세요.");
+      return;
+    }
+  
+    if (!title.trim()) {
+      alert("제목을 입력해주세요.");
+      return;
+    }
+  
+    if (rating === 0) {
+      alert("별점을 선택해주세요.");
+      return;
+    }
+  
+    if (!comment.trim()) {
+      alert("리뷰 본문을 작성해주세요.");
+      return;
+    }
+  
+    try {
+      await instance.post(
+        `/review/${selectedPlace.id}`,
+        {
+          title,
+          comment,
+          score: rating,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      alert("리뷰가 등록되었습니다!");
+      navigate(`/restaurant/${selectedPlace.id}`);
+    } catch (err) {
+      console.error("리뷰 등록 실패", err);
+      alert("리뷰 등록 중 오류가 발생했습니다.");
+    }
+  };
+
+
   const tagOptions = ["친절함", "혼밥가능", "가성비", "매움", "인테리어", "화장실있음", "맛있음"];
 
 
@@ -65,7 +120,7 @@ const ReviewWrite = () => {
     <Container>
       <Header>
         <CancelButton onClick={() => navigate(-1)}>취소</CancelButton>
-        <DoneButton>완료</DoneButton>
+        <DoneButton onClick={handleSubmit}>완료</DoneButton>
       </Header>
 
       <UserInfo>
@@ -150,18 +205,18 @@ const ReviewWrite = () => {
 
         {openList && (
           <LocationList>
-            {picData.map((store) => (
-              <LocationItem
-                key={store.id}
-                onClick={() => {
-                  setSelectedPlace(store);
-                  setOpenList(false);
-                }}
-              >
-                {store.name}
-              </LocationItem>
-            ))}
-          </LocationList>
+          {placeList.map((store) => (
+            <LocationItem
+              key={store.id}
+              onClick={() => {
+                setSelectedPlace(store);
+                setOpenList(false);
+              }}
+            >
+              {store.name}
+            </LocationItem>
+          ))}
+        </LocationList>
         )}
       </LocationSelector>
       <StarRow>
@@ -179,7 +234,11 @@ const ReviewWrite = () => {
       <RatingText>{rating.toFixed(1)} / 5.0</RatingText>
 
       <FormWrapper>
-        <TextArea placeholder="리뷰를 작성해 주세요." />
+      <TextArea
+        placeholder="리뷰를 작성해 주세요."
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+      />
       </FormWrapper>
     </Container>
   );

@@ -1,26 +1,22 @@
-// // import { instance } from "./../../api/instance";
-
-// export default function MyPage() {
-//   return (
-//     <Container>
-//       <h1>hello</h1>
-//     </Container>
-//   );
-// }
-
-// const Container = styled.div`
-//   display: flex;
-//   //height: 100vh;
-//   align-items: center;
-//   justify-content: center;
-// `;
-
 import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReviewCard from "./ReviewCard";
 
 const MyPage = () => {
+  const navigate = useNavigate();
+
+  const nickname = localStorage.getItem("nickname") || "닉네임 없음";
+  const email = localStorage.getItem("email") || "이메일 없음";
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("nickname");
+    localStorage.removeItem("email");
+    alert("로그아웃되었습니다");
+    navigate("/");
+  };
+
   // 샘플 데이터
   const reviews = [
     {
@@ -44,10 +40,10 @@ const MyPage = () => {
   return (
     <div>
       <ProfileContainer>
-        <LogoutButton>로그아웃</LogoutButton>
+        <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         <ProfileImage> </ProfileImage>
-        <InfoBox>PubPick</InfoBox>
-        <InfoBox> pubpick@naver.com </InfoBox>
+        <InfoBox>{nickname}</InfoBox>
+        <InfoBox> {email} </InfoBox>
       </ProfileContainer>
       <ReviewContainer>
         <h3>작성한 리뷰 목록</h3>

@@ -43,7 +43,7 @@ const MarkerOverlay = ({
 
     // initial render
     root.render(
-      <MarkerContent isSelected={isSelected}>
+      <MarkerContent $isSelected={isSelected}>
         {storeName}
       </MarkerContent>
     );
@@ -61,15 +61,15 @@ const MarkerOverlay = ({
     return () => {
       marker.setMap(null);
       overlay.setMap(null);
-      root.unmount();
+      //root.unmount();
     };
-  }, [map, position, index, onClick, storeName]);
+  }, [map, position, index, onClick, storeName, isSelected]);
 
   // 5) isSelected 변경 시에는 overlay content만 다시 렌더링
   useEffect(() => {
     if (!rootRef.current) return;
     rootRef.current.render(
-      <MarkerContent isSelected={isSelected}>
+      <MarkerContent $isSelected={isSelected}>
         {storeName}
       </MarkerContent>
     );

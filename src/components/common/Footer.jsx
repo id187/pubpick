@@ -11,15 +11,21 @@ import { ReactComponent as homeIcon } from "../../assets/icons/homeIcon.svg";
 import { ReactComponent as userIcon } from "../../assets/icons/userIcon.svg";
 
 export default function Footer() {
-  const [active, setActive] = useState("home");
+  //const [active, setActive] = useState("home");
   const navigate = useNavigate();
   const location = useLocation();
 
   const { showModal, setShowModal, checkLogin } = useLoginRequired(); // ✅ 추가
 
-  const handleClick = (key) => {
-    setActive(key);
+  const getActiveKey = () => {
+    if (location.pathname.startsWith("/write")) return "write";
+    if (location.pathname.startsWith("/mypage")) return "mypage";
+    return "home";
+  };
 
+  const active = getActiveKey();
+
+  const handleClick = (key) => {
     if (key === "write" || key === "mypage") {
       if (!checkLogin()) return;
     }
@@ -27,7 +33,7 @@ export default function Footer() {
     if (key === "home") navigate("/");
     if (key === "write") {
       navigate("/write", {
-        state: { from: location.pathname }
+        state: { from: location.pathname },
       });
     }
     if (key === "mypage") navigate("/mypage");
@@ -49,8 +55,11 @@ export default function Footer() {
           </IconButton>
         ))}
       </FooterBar>
-      {showModal && <LoginRequiredModal onClose={() => setShowModal(false)} />}{" "}
-      {/* ✅ 모달 렌더링 */}
+      {showModal &&
+        location.pathname !== "/login" &&
+        location.pathname !== "/signup" && (
+          <LoginRequiredModal onClose={() => setShowModal(false)} />
+        )}
     </>
   );
 }

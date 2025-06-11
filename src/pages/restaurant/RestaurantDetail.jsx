@@ -1,30 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
+import { instance } from "../../api/instance";
+
 
 const RestaurantDetail = () => {
   const { id } = useParams();
 
-  const restaurant = {
-    name: "고주파",
-    rating: 4.1,
-    type: "구이",
-    best: "가성비",
-    hours: "11:00 ~ 21:00",
-    breakTime: "14:00 ~ 15:00",
-    image: "/img/store-default.jpg",
-  };
+  const [restaurant, setRestaurant] = useState(null);
+  const [reviews, setReviews] = useState([]);
 
-  const reviews = [
-    { id: 1, title: "맛있는데 비쌈", rating: 4.2 },
-    { id: 2, title: "존맛탱 인정", rating: 5.0 },
-    { id: 3, title: "두 번은 안 감", rating: 2.0 },
-    { id: 4, title: "또 갈 듯", rating: 4.5 },
-    { id: 5, title: "비싸지만 맛있음", rating: 4.4 },
-    { id: 6, title: "평범함", rating: 3.2 },
-    { id: 7, title: "먹고 배탈남", rating: 1.0 },
-  ];
+  useEffect(() => {
+    instance
+      .get(`/place/${id}`)
+      .then((res) => {
+        const data = res.data.data;
+        setRestaurant(data);
+        setReviews(data.reviews || []);
+      })
+      .catch((err) => {
+        console.error("음식점 상세 조회 실패:", err);
+      });
+  }, [id]);
 
   const pageSize = 3;
   const [page, setPage] = useState(1);
@@ -42,25 +40,21 @@ const RestaurantDetail = () => {
     (page - 1) * pageSize,
     page * pageSize
   );
-
+  if (!restaurant) return <div>불러오는 중...</div>;
   return (
     <Wrapper>
       <BackButton to="/">← 메인으로</BackButton> 
       <Content>
-        <Image src={restaurant.image} alt="음식 이미지" />
+        <Image src={restaurant.imagePath || "/img/store-default.jpg"} alt="음식 이미지" />
         <TitleRow>
           <Title>{restaurant.name}</Title>
-          <Rating>★{restaurant.rating}</Rating>
+          <Rating>★{restaurant.score}</Rating>
         </TitleRow>
         <TagList>
-          <Tag>#{restaurant.type}</Tag>
-          <Tag>#{restaurant.best}</Tag>
-          <Tag>#맛</Tag>
+          <Tag>{restaurant.cuisine || "정보 없음"}</Tag>
         </TagList>
         <Time>
-          영업 시간: {restaurant.hours}
-          <br />
-          휴게 시간: {restaurant.breakTime}
+          {restaurant.location || "정보 없음"}
         </Time>
 
         <ReviewList>
@@ -69,7 +63,7 @@ const RestaurantDetail = () => {
               <ReviewCard>
                 <FaUser />
                 <span>
-                  ★{r.rating} - {r.title}
+                  ★{r.score} - {r.title}
                 </span>
               </ReviewCard>
             </StyledLink>
@@ -79,7 +73,7 @@ const RestaurantDetail = () => {
         <PageButton onClick={handlePrev} disabled={page === 1}>
           이전
         </PageButton>
-        <PageButton onClick={handleNext} disabled={page === totalPages}>
+        <PageButton onClick={handleNext} disabled={page >= totalPages || totalPages === 0}>
           다음
         </PageButton>
       </Pagination>
@@ -124,11 +118,11 @@ const Image = styled.img`
 
 const TitleRow = styled.div`
   display: flex;
-  justify-content: center; /* 또는 space-between, flex-start 등도 가능 */
-  align-items: baseline; /* 제목과 별점 수평 정렬 */
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
   margin-top: 0.5rem;
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.5rem;
+  text-align: center;
 `;
 
 const Title = styled.h2`

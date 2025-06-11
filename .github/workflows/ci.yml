@@ -1,0 +1,31 @@
+name: Run Jest Tests
+
+# develop 브랜치로 향하는 PR이 열리거나 갱신될 때마다 실행
+on:
+  pull_request:
+    branches:
+      - develop
+
+jobs:
+  test:
+    name: 🧪 Jest Tests
+    runs-on: ubuntu-latest
+    steps:
+      # 1) 소스 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2) Node.js 설치 (일단은 18.x)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      # 3) 의존성 설치
+      - name: Install dependencies
+        run: npm ci
+
+      # 4) Jest 테스트 실행
+      - name: Run tests
+        run: npm test -- --ci --coverage --watchAll=false
