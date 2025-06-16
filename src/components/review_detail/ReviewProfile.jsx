@@ -61,7 +61,6 @@ const ReviewProfile = ({ profileImage, name, rating, date }) => {
   const totalStars = 5;
 
   // rating 값에 따라 활성화된 별(★)과 비활성화된 별(☆)을 보여줍니다.
-  // 추후에 소수점 단위 업데이트
   const stars = Array.from({ length: totalStars }, (_, index) => (
     <Star key={index} active={index < rating}>
       ★

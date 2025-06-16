@@ -2,22 +2,57 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import HeaderWithoutSearch from "../../components/common/HeaderWithoutSearch";
+import { instance } from "../../api/instance";
+import LogRocket from "logrocket";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // 간단한 로그인 시뮬레이션
-    if (email && password) {
-      localStorage.setItem("accessToken", "fake-token");
-      alert("로그인되었습니다.");
-      navigate("/"); // 로그인 성공 시 메인페이지로 이동
-    } else {
+    if (!email || !password) {
       alert("이메일과 비밀번호를 입력하세요.");
+      return;
+    }
+
+    try {
+      const res = await instance.post("/auth/login", {
+        email,
+        password,
+      });
+
+      const { accessToken, nickname } = res.data.data;
+
+      if (!accessToken) {
+        throw new Error("accessToken이 존재하지 않습니다.");
+      }
+
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("nickname", nickname || "");
+      localStorage.setItem("email", email);
+
+      // ✅ 로그인 성공 시 identify 실행
+      LogRocket.identify(email, {
+        name: nickname || "사용자",
+        email: email,
+        role: "user", // 커스텀 정보도 추가 가능
+      });
+
+      alert("로그인되었습니다.");
+      navigate("/");
+    } catch (error) {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("nickname");
+      localStorage.removeItem("email");
+
+      if (error.response?.data?.message) {
+        alert(`로그인 실패: ${error.response.data.message}`);
+      } else {
+        alert("로그인 실패: 네트워크 오류 또는 서버 오류");
+      }
     }
   };
 

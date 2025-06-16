@@ -6,8 +6,8 @@ const LoginRequiredModal = ({ onClose }) => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    onClose(); // 모달 먼저 닫고
-    navigate("/login"); // 로그인 페이지로 이동
+    onClose();
+    navigate("/login");
   };
 
   return (

@@ -1,9 +1,9 @@
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaCamera, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaCamera, FaMapMarkerAlt } from "react-icons/fa";
 import { useLocation } from "react-router-dom";
-import { instance } from "../api/instance"; 
+import { instance } from "../api/instance";
 
 const ReviewWrite = () => {
   const navigate = useNavigate();
@@ -20,7 +20,7 @@ const ReviewWrite = () => {
         console.error("장소 목록 불러오기 실패", err);
       }
     };
-  
+
     fetchPlaces();
   }, []);
 
@@ -37,7 +37,6 @@ const ReviewWrite = () => {
     setSelectedPlace(place);
     setShowModal(false);
   };
-  
 
   const [rating, setRating] = useState(0);
   const handleStarClick = (e, index) => {
@@ -52,6 +51,17 @@ const ReviewWrite = () => {
   const fromPath = location.state?.from; // 예: "/restaurant/1"
   const token = localStorage.getItem("accessToken");
 
+  const [nickname, setNickname] = useState("");
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const storedNickname = localStorage.getItem("nickname");
+    const storedEmail = localStorage.getItem("email");
+
+    if (storedNickname) setNickname(storedNickname);
+    if (storedEmail) setEmail(storedEmail);
+  }, []);
+
   const [selectedPlace, setSelectedPlace] = useState(null);
   const [openList, setOpenList] = useState(false);
   const [title, setTitle] = useState("");
@@ -61,7 +71,7 @@ const ReviewWrite = () => {
   const handleRemoveTag = (tag) => {
     setSelectedTags((prev) => prev.filter((t) => t !== tag));
   };
-  
+
   const handleAddTag = (tag) => {
     if (!selectedTags.includes(tag) && selectedTags.length < maxTags) {
       setSelectedTags((prev) => [...prev, tag]);
@@ -73,22 +83,22 @@ const ReviewWrite = () => {
       alert("장소를 선택해주세요.");
       return;
     }
-  
+
     if (!title.trim()) {
       alert("제목을 입력해주세요.");
       return;
     }
-  
+
     if (rating === 0) {
       alert("별점을 선택해주세요.");
       return;
     }
-  
+
     if (!comment.trim()) {
       alert("리뷰 본문을 작성해주세요.");
       return;
     }
-  
+
     try {
       await instance.post(
         `/review/${selectedPlace.id}`,
@@ -103,7 +113,7 @@ const ReviewWrite = () => {
           },
         }
       );
-  
+
       alert("리뷰가 등록되었습니다!");
       navigate(`/restaurant/${selectedPlace.id}`);
     } catch (err) {
@@ -112,9 +122,18 @@ const ReviewWrite = () => {
     }
   };
 
-
-  const tagOptions = ["친절함", "혼밥가능", "가성비", "매움", "인테리어", "화장실있음", "맛있음"];
-
+  const tagOptions = [
+    "단체회식",
+    "분위기 좋음",
+    "가성비",
+    "화장실 깨끗",
+    "맛있음",
+    "친절함",
+    "2차로 좋음",
+    "대화하기 좋음",
+    "그냥 그래요",
+    "비추천",
+  ];
 
   return (
     <Container>
@@ -126,8 +145,8 @@ const ReviewWrite = () => {
       <UserInfo>
         <Avatar />
         <UserText>
-          <Name>펍픽</Name>
-          <Username>@pubpick</Username>
+          <Name>{nickname || "닉네임 없음"}</Name>
+          <Username>{email || "이메일 없음"}</Username>
         </UserText>
       </UserInfo>
       <TitleInput
@@ -141,91 +160,92 @@ const ReviewWrite = () => {
           <label htmlFor="image-upload">
             {image ? (
               <UploadedContainer>
-              <UploadedImage src={image} alt="uploaded" />
-              <DeleteButton onClick={(e) => {
-                e.preventDefault();
-                setImage(null);
-              }}>
-                ×
-              </DeleteButton>
-            </UploadedContainer>
-          ) : (
-            <UploadPlaceholder>
-              <FaCamera size={40} />
-              <span>사진을 추가하세요</span>
-            </UploadPlaceholder>
-          )}
-        </label>
-        <input
-          type="file"
-          id="image-upload"
-          accept="image/*"
-          onChange={handleImageChange}
-          style={{ display: 'none' }}
-        />
-      </ImageUploadArea>
-          <TagColumn>
+                <UploadedImage src={image} alt="uploaded" />
+                <DeleteButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setImage(null);
+                  }}
+                >
+                  ×
+                </DeleteButton>
+              </UploadedContainer>
+            ) : (
+              <UploadPlaceholder>
+                <FaCamera size={40} />
+                <span>사진을 추가하세요</span>
+              </UploadPlaceholder>
+            )}
+          </label>
+          <input
+            type="file"
+            id="image-upload"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={{ display: "none" }}
+          />
+        </ImageUploadArea>
+        <TagColumn>
           <AddTagButton
-            onClick={() => setTagListVisible(true)}
-            disabled={selectedTags.length >= maxTags}
+            onClick={() => setTagListVisible((prev) => !prev)}
+            disabled={selectedTags.length >= maxTags && !tagListVisible}
           >
-          + 태그추가
+            + 태그추가
           </AddTagButton>
           {tagListVisible && (
             <TagOptionsBox>
-            {tagOptions.map((tag) => (
-              <TagOption
-                key={tag}
-                onClick={() => {
-                  handleAddTag(tag);
-                  setTagListVisible(false);
-                }}
-                disabled={selectedTags.includes(tag)}
-              >
-                {tag}
-              </TagOption>
-            ))}
-          </TagOptionsBox>
-        )}
+              {tagOptions.map((tag) => (
+                <TagOption
+                  key={tag}
+                  onClick={() => {
+                    handleAddTag(tag);
+                    if (selectedTags.length + 1 >= maxTags) {
+                      setTagListVisible(false);
+                    }
+                  }}
+                  disabled={selectedTags.includes(tag)}
+                >
+                  {tag}
+                </TagOption>
+              ))}
+            </TagOptionsBox>
+          )}
 
           <TagList>
-          {selectedTags.map((tag) => (
-            <Tag key={tag}>
-            {tag}
-            <RemoveX onClick={() => handleRemoveTag(tag)}>×</RemoveX>
-            </Tag>
+            {selectedTags.map((tag) => (
+              <Tag key={tag}>
+                {tag}
+                <RemoveX onClick={() => handleRemoveTag(tag)}>×</RemoveX>
+              </Tag>
             ))}
           </TagList>
-          </TagColumn>
+        </TagColumn>
       </PhotoLocationRow>
       <LocationSelector>
         <LocationDisplay onClick={() => setOpenList((prev) => !prev)}>
-        <FaMapMarkerAlt /> 장소: {selectedPlace?.name || "(선택하세요)"}
+          <FaMapMarkerAlt /> 장소: {selectedPlace?.name || "(선택하세요)"}
         </LocationDisplay>
 
         {openList && (
           <LocationList>
-          {placeList.map((store) => (
-            <LocationItem
-              key={store.id}
-              onClick={() => {
-                setSelectedPlace(store);
-                setOpenList(false);
-              }}
-            >
-              {store.name}
-            </LocationItem>
-          ))}
-        </LocationList>
+            {placeList.map((store) => (
+              <LocationItem
+                key={store.id}
+                onClick={() => {
+                  setSelectedPlace(store);
+                  setOpenList(false);
+                }}
+              >
+                {store.name}
+              </LocationItem>
+            ))}
+          </LocationList>
         )}
       </LocationSelector>
       <StarRow>
         {[0, 1, 2, 3, 4].map((i) => (
           <StarWrapper key={i} onClick={(e) => handleStarClick(e, i)}>
-            <Star
-              filled={rating >= i + 1}
-              half={rating === i + 0.5}
-            >
+            <Star filled={rating >= i + 1} half={rating === i + 0.5}>
               ★
             </Star>
           </StarWrapper>
@@ -234,11 +254,11 @@ const ReviewWrite = () => {
       <RatingText>{rating.toFixed(1)} / 5.0</RatingText>
 
       <FormWrapper>
-      <TextArea
-        placeholder="리뷰를 작성해 주세요."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
+        <TextArea
+          placeholder="리뷰를 작성해 주세요."
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+        />
       </FormWrapper>
     </Container>
   );
@@ -251,9 +271,9 @@ export default ReviewWrite;
 const Container = styled.div`
   height: 100vh;
   display: flex;
-  overflow: hidden; 
+  overflow: hidden;
   flex-direction: column;
-  background-color: #f6f6f6;;
+  background-color: #f6f6f6;
   padding: 1rem;
   position: relative;
   box-sizing: border-box;
@@ -263,7 +283,8 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-top: -0.3rem;
+  margin-bottom: 0.5rem;
 `;
 
 const CancelButton = styled.button`
@@ -296,7 +317,10 @@ const Avatar = styled.div`
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: #e0e0e0;
+  background-image: url("/img/profile-default.svg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 `;
 
 const UserText = styled.div`
@@ -319,8 +343,8 @@ const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  margin-top: 1rem;
-  padding-bottom: 6rem;
+  margin-top: 0.4rem;
+  padding-bottom: 3.2rem;
 `;
 
 const TitleInput = styled.input`
@@ -346,7 +370,6 @@ const TitleInput = styled.input`
     box-shadow: 0 0 0 2px #ffece9;
   }
 `;
-
 
 const TextArea = styled.textarea`
   flex-grow: 1;
@@ -376,7 +399,6 @@ const ImageUploadArea = styled.div`
   margin: 0 auto 0 auto;
   cursor: pointer;
 `;
-
 
 const UploadPlaceholder = styled.div`
   width: 100%;
@@ -418,8 +440,7 @@ const StarWrapper = styled.div`
 `;
 
 const Star = styled.div`
-  color: ${({ filled, half }) =>
-    filled || half ? '#ff6f61' : '#ddd'};
+  color: ${({ filled, half }) => (filled || half ? "#ff6f61" : "#ddd")};
   font-size: 2rem;
   line-height: 1;
   position: relative;
@@ -468,7 +489,7 @@ const DeleteButton = styled.button`
 `;
 
 const LocationSelector = styled.div`
-  margin: 0.5rem 0;
+  margin: 0.2rem 0;
   position: relative;
 `;
 
@@ -495,7 +516,6 @@ const LocationList = styled.ul`
   width: 100%;
   box-sizing: border-box;
 `;
-
 
 const LocationItem = styled.li`
   padding: 0.5rem 0.75rem;
@@ -546,6 +566,7 @@ const AddTagButton = styled.button`
   cursor: pointer;
   text-align: left;
   padding: 0;
+  margin-bottom: 0.5rem;
 
   &:disabled {
     color: #ccc;
@@ -558,7 +579,7 @@ const TagOptionsBox = styled.div`
   top: 1.5rem;
   left: 0;
   z-index: 10;
-  max-width: 100%; 
+  max-width: 100%;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 0.5rem;

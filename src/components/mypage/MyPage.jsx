@@ -1,66 +1,119 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import ReviewCard from "./ReviewCard";
+import { instance } from "../../api/instance";
+import LogRocket from "logrocket";
 
 const MyPage = () => {
   const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [reviews, setReviews] = useState([]);
 
-  const nickname = localStorage.getItem("nickname") || "닉네임 없음";
-  const email = localStorage.getItem("email") || "이메일 없음";
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("nickname");
     localStorage.removeItem("email");
+
+    // 기존 유저 로그 종료 + 새로운 빈 세션 시작
+    try {
+      await LogRocket.startNewSessionSameConfig();
+      console.log("LogRocket 새 세션 시작됨");
+    } catch (err) {
+      console.error("LogRocket 세션 초기화 실패:", err);
+    }
+
     alert("로그아웃되었습니다");
     navigate("/");
   };
 
   // 샘플 데이터
-  const reviews = [
-    {
-      id: 1,
-      name: "고주파",
-      rating: 4.8,
-      reviewCount: 500,
-      tags: ["맛", "분위기", "가성비"],
-      imageSrc: "/img/store-default.jpg",
-    },
-    {
-      id: 2,
-      name: "홍등롱",
-      rating: 4.8,
-      reviewCount: 500,
-      tags: ["맛", "분위기", "가성비"],
-      imageSrc: "/img/store-default.jpg",
-    },
-  ];
+  // const reviews = [
+  //   {
+  //     id: 1,
+  //     name: "고주파",
+  //     rating: 4.8,
+  //     reviewCount: 500,
+  //     tags: ["맛", "분위기", "가성비"],
+  //     imageSrc: "/img/store-default.jpg",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "홍등롱",
+  //     rating: 4.8,
+  //     reviewCount: 500,
+  //     tags: ["맛", "분위기", "가성비"],
+  //     imageSrc: "/img/store-default.jpg",
+  //   },
+  // ];
+
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    console.log("현재 저장된 토큰:", token);
+
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      navigate("/login");
+      return; // ✅ 토큰 없으면 API 호출하지 않음
+    }
+
+    const fetchProfile = async () => {
+      try {
+        const res = await instance.get("/user/profile"); // headers 생략해도 됨 (interceptor로 처리)
+        const { data } = res.data;
+
+        console.log("리뷰 원본 구조:", data.reviews);
+
+        localStorage.setItem("nickname", data.nickname);
+        localStorage.setItem("email", data.email);
+
+        setUser(data);
+        setReviews(
+          (data.reviews || []).map((r) => ({
+            ...r,
+            rating: r.rating ?? r.score ?? 0,
+            reviewCount: r.reviewCount ?? r.totalReviews ?? 0,
+            tags: Array.isArray(r.tags) ? r.tags : [],
+            imageSrc: r.imageSrc ?? r.imagePath ?? "/img/store-default.jpg",
+          }))
+        );
+      } catch (err) {
+        alert("마이페이지 정보를 불러오지 못했습니다.");
+        console.error(err);
+      }
+    };
+
+    fetchProfile();
+  }, [navigate]);
+
+  if (!user) return <div>로딩 중...</div>;
 
   return (
     <div>
       <ProfileContainer>
         <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         <ProfileImage> </ProfileImage>
-        <InfoBox>{nickname}</InfoBox>
-        <InfoBox> {email} </InfoBox>
+        <InfoBox>{user.nickname}</InfoBox>
+        <InfoBox>{user.email}</InfoBox>
       </ProfileContainer>
+
       <ReviewContainer>
         <h3>작성한 리뷰 목록</h3>
-        {reviews.map((review, index) => (
-          <ReviewCard
-            key={review.id}
-            id={review.id}
-            name={review.name}
-            rating={review.rating}
-            reviewCount={review.reviewCount}
-            tags={review.tags}
-            imageSrc={review.imageSrc}
-            isSelected={false}
-            onSelect={() => {}}
-            index={index}
-          />
-        ))}
+        {reviews.length === 0 ? (
+          <p>작성한 리뷰가 없습니다.</p>
+        ) : (
+          reviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              id={review.id}
+              name={review.name}
+              rating={review.rating}
+              reviewCount={review.reviewCount}
+              tags={review.tags}
+              imageSrc={review.imageSrc}
+            />
+          ))
+        )}
       </ReviewContainer>
     </div>
   );

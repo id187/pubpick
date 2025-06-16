@@ -1,0 +1,47 @@
+# name: Build and Upload Sentry Release
+
+# on:
+#   push:
+#     branches:
+#       - develop # 또는 배포 브랜치
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+
+#       - uses: actions/setup-node@v3
+#         with:
+#           node-version: "18.x"
+
+#       - run: npm ci
+#       - run: npm run build
+
+#         # 👉 Cypress 설치
+#       - name: Install Cypress
+#         run: npm install cypress wait-on
+
+#       # 👉 앱 실행 (serve 사용 예시)
+#       - name: Start App in Background
+#         run: npx serve -s build &
+
+#       # 👉 서버 대기
+#       - name: Wait for App to Start
+#         run: npx wait-on http://localhost:3000
+
+#       # 👉 Cypress 실행
+#       - name: Run Cypress tests
+#         run: npx cypress run
+
+#       # 👉 Sentry sourcemaps 업로드
+#       - name: Upload sourcemaps to Sentry
+#         uses: getsentry/action-release@v1
+#         with:
+#           environment: production
+#           version: ${{ github.sha }}
+#           sourcemaps: ./build/static/js
+#         env:
+#           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+#           SENTRY_ORG: davin-sj
+#           SENTRY_PROJECT: pubpick

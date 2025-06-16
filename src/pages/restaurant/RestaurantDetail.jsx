@@ -4,7 +4,6 @@ import { Link, useParams } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { instance } from "../../api/instance";
 
-
 const RestaurantDetail = () => {
   const { id } = useParams();
 
@@ -43,9 +42,12 @@ const RestaurantDetail = () => {
   if (!restaurant) return <div>불러오는 중...</div>;
   return (
     <Wrapper>
-      <BackButton to="/">← 메인으로</BackButton> 
+      {/* <BackButton to="/">← 메인으로</BackButton>  */}
       <Content>
-        <Image src={restaurant.imagePath || "/img/store-default.jpg"} alt="음식 이미지" />
+        <Image
+          src={restaurant.imagePath || "/img/store-default.jpg"}
+          alt="음식 이미지"
+        />
         <TitleRow>
           <Title>{restaurant.name}</Title>
           <Rating>★{restaurant.score}</Rating>
@@ -53,9 +55,7 @@ const RestaurantDetail = () => {
         <TagList>
           <Tag>{restaurant.cuisine || "정보 없음"}</Tag>
         </TagList>
-        <Time>
-          {restaurant.location || "정보 없음"}
-        </Time>
+        <Time>{restaurant.location || "정보 없음"}</Time>
 
         <ReviewList>
           {paginatedReviews.map((r) => (
@@ -70,13 +70,16 @@ const RestaurantDetail = () => {
           ))}
         </ReviewList>
         <Pagination>
-        <PageButton onClick={handlePrev} disabled={page === 1}>
-          이전
-        </PageButton>
-        <PageButton onClick={handleNext} disabled={page >= totalPages || totalPages === 0}>
-          다음
-        </PageButton>
-      </Pagination>
+          <PageButton onClick={handlePrev} disabled={page === 1}>
+            이전
+          </PageButton>
+          <PageButton
+            onClick={handleNext}
+            disabled={page >= totalPages || totalPages === 0}
+          >
+            다음
+          </PageButton>
+        </Pagination>
       </Content>
     </Wrapper>
   );
@@ -99,7 +102,7 @@ const Wrapper = styled.div`
 `;
 
 const Content = styled.div`
-  margin-top: 3rem;
+  margin-top: 0.2rem;
   width: 100%;
   max-width: 24rem;
 `;
@@ -107,7 +110,7 @@ const Content = styled.div`
 const Image = styled.img`
   width: 100%;
   max-width: 24rem; /* 원하는 가로 사이즈 */
-  height: 12rem; /* 원하는 세로 고정 */
+  height: 13rem; /* 원하는 세로 고정 */
   object-fit: cover; /* ✅ 박스 채우기 (잘릴 수 있음) */
   object-position: center; /* ✅ 중앙 기준으로 잘리게 */
   border-radius: 0.5rem;
@@ -168,7 +171,7 @@ const ReviewList = styled.ul`
   padding: 0;
   list-style: none;
   width: 100%;
-  min-height: 12rem; 
+  min-height: 12rem;
 `;
 
 const StyledLink = styled(Link)`
@@ -206,7 +209,7 @@ const Pagination = styled.div`
   display: flex;
   justify-content: center;
   gap: 6rem;
-  margin-top: 1.5rem;
+  margin-top: 0.1rem;
 `;
 
 const PageButton = styled.button`

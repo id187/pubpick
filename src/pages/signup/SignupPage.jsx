@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import HeaderWithoutSearch from "../../components/common/HeaderWithoutSearch";
+import { instance } from "../../api/instance";
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ const SignupPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     if (!email || !password || !confirmPassword || !nickname) {
@@ -24,12 +25,23 @@ const SignupPage = () => {
       return;
     }
 
-    // 회원가입 로직 시뮬레이션
-    alert(`환영합니다, ${nickname}님!`);
-    localStorage.setItem("accessToken", "fake-token");
-    localStorage.setItem("nickname", nickname); // 닉네임 저장 예시
-    localStorage.setItem("email", email);
-    navigate("/");
+    try {
+      await instance.post("/auth/signup", {
+        email,
+        password,
+        nickname,
+        profilePath: "", // 선택 항목. 필요시 이미지 업로드 로직 추가 가능
+      });
+
+      alert(`환영합니다, ${nickname}님!`);
+      navigate("/login"); // 회원가입 후 로그인 페이지로 이동
+    } catch (error) {
+      if (error.response) {
+        alert(`회원가입 실패: ${error.response.data.message || "서버 오류"}`);
+      } else {
+        alert("회원가입 실패: 네트워크 오류");
+      }
+    }
   };
 
   return (

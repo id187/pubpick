@@ -1,60 +1,76 @@
-// 예시: src/pages/review/ReviewDetail.jsx
-import React from "react";
+// src/pages/review/ReviewDetail.jsx
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import ReviewProfile from "../../components/review_detail/ReviewProfile.jsx";
 import ReviewHeader from "../../components/review_detail/ReviewHeader.jsx";
 import ReviewMain from "../../components/review_detail/ReviewMain.jsx";
 import ReviewThumbs from "../../components/review_detail/ReviewThumbs.jsx";
-// import Header from "../../components/mainpage/header.jsx";
+import {instance} from "../../api/instance.js";
 
 function ReviewDetail() {
-  // 임의의 데이터 (실제 사용시 API나 props로 데이터를 전달)
+  const { id } = useParams();
+  const [review, setReview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!id) return;
+    instance
+      .get(`/review/${id}`)
+      .then((response) => {
+        if (response.data.success) {
+          setReview(response.data.data);
+        } else {
+          setError(response.data.message);
+        }
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>리뷰를 불러오는 중 오류가 발생했습니다: {error}</div>;
+  }
+
+  // API에서 받은 데이터 매핑
   const profileData = {
-    profileImage: "/img/2. 교표(Symbol).png",
-    name: "한유승",
-    rating: 4, // 5점 만점 중 4점
-    date: "2025-04-10",
+    profileImage: review.profileImage || "/default-profile.png",
+    name: review.writer,
+    rating: Math.round(review.score),
+    date: review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "",
   };
 
-  const storeData = {
-    storeName: "핵밥 서강대점",
-    images: [
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-      "/img/hackbob.jpg",
-    ],
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    tags: ["맛있어요", "분위기가 좋아요", "가성비 최고"],
+  const mainData = {
+    storeName: review.placeName,
+    images: review.images || [],
+    content: review.comment,
+    tags: review.tags || [],
   };
 
   return (
     <div>
-      {/* 상단 기본 헤더 */}
-      {/* 없는게 나을거 같기도 함 */}
-      {/* <Header /> */}
-      {/* 리뷰 헤더 영역 */}
-      <ReviewHeader />
-      {/* 리뷰 프로필 영역 */}
+      <ReviewHeader title={review.title} />
       <ReviewProfile
         profileImage={profileData.profileImage}
         name={profileData.name}
         rating={profileData.rating}
         date={profileData.date}
       />
-      {/* 리뷰 상세 내용 */}
       <ReviewMain
-        storeName={storeData.storeName}
-        images={storeData.images}
-        content={storeData.content}
-        tags={storeData.tags}
+        storeName={mainData.storeName}
+        images={mainData.images}
+        content={mainData.content}
+        tags={mainData.tags}
       />
-      {/* 공감 버튼 */}
-
-      {/* 하단 버튼 */}
-      {/* <Footer /> */}
+      <ReviewThumbs reviewId={id} />
     </div>
   );
 }
