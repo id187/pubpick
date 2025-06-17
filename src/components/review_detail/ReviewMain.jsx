@@ -1,8 +1,8 @@
 // src/components/review_detail/ReviewMain.jsx
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import "../../styles/color.css";
-import BookmarkToggle from '../common/BookMarkToggle';
+import BookmarkToggle from "../common/BookMarkToggle";
 
 const ReviewMainContainer = styled.div`
   width: 100%;
@@ -66,7 +66,7 @@ function ReviewMain({ storeName, images, content, tags }) {
     <ReviewMainContainer>
       <TitleContainer>
         <StoreName>{storeName}</StoreName>
-        <BookmarkToggle />
+        {/* <BookmarkToggle /> */}
       </TitleContainer>
 
       <ImageScrollContainer>

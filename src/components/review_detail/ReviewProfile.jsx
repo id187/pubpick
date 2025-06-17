@@ -69,7 +69,10 @@ const ReviewProfile = ({ profileImage, name, rating, date }) => {
 
   return (
     <ReviewProfileContainer>
-      <ProfileImage src={profileImage} alt={`${name}의 프로필 사진`} />
+      <ProfileImage
+        src="/img/profile-default.svg"
+        alt={`${name}의 프로필 사진`}
+      />
       <InfoContainer>
         <NameText>{name}</NameText>
         <SubInfoContainer>

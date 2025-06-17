@@ -11,9 +11,9 @@ const Map = ({data, selectedIndex, onMarkerClick }) => {
       const instance = new window.kakao.maps.Map(mapRef.current, {
         center: new window.kakao.maps.LatLng(37.5509442, 126.9410023), // 서강대학교 위치
         level: 4,
-        minLevel: 4,
+        minLevel: 1,
         maxLevel: 4,
-        zoomable: false,
+        zoomable: true,
       });
       setMap(instance);
     });

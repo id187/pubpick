@@ -5,7 +5,7 @@ import ReviewProfile from "../../components/review_detail/ReviewProfile.jsx";
 import ReviewHeader from "../../components/review_detail/ReviewHeader.jsx";
 import ReviewMain from "../../components/review_detail/ReviewMain.jsx";
 import ReviewThumbs from "../../components/review_detail/ReviewThumbs.jsx";
-import {instance} from "../../api/instance.js";
+import { instance } from "../../api/instance.js";
 
 function ReviewDetail() {
   const { id } = useParams();
@@ -45,7 +45,9 @@ function ReviewDetail() {
     profileImage: review.profileImage || "/default-profile.png",
     name: review.writer,
     rating: Math.round(review.score),
-    date: review.createdAt ? new Date(review.createdAt).toLocaleDateString() : "",
+    date: review.createdAt
+      ? new Date(review.createdAt).toLocaleDateString()
+      : "",
   };
 
   const mainData = {
@@ -59,7 +61,7 @@ function ReviewDetail() {
     <div>
       <ReviewHeader title={review.title} />
       <ReviewProfile
-        profileImage={profileData.profileImage}
+        // profileImage={profileData.profileImage}
         name={profileData.name}
         rating={profileData.rating}
         date={profileData.date}
@@ -70,7 +72,7 @@ function ReviewDetail() {
         content={mainData.content}
         tags={mainData.tags}
       />
-      <ReviewThumbs reviewId={id} />
+      {/* <ReviewThumbs reviewId={id} /> */}
     </div>
   );
 }
