@@ -72,6 +72,8 @@ const ReviewWrite = () => {
     setSelectedTags((prev) => prev.filter((t) => t !== tag));
   };
 
+  const tagOptions = Object.keys(tagNameMap);
+
   const handleAddTag = (tag) => {
     if (!selectedTags.includes(tag) && selectedTags.length < maxTags) {
       setSelectedTags((prev) => [...prev, tag]);
