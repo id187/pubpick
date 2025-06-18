@@ -14,16 +14,15 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^6.30.1",
+    "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
-    "styled-components": "^6.1.19",
+    "styled-components": "^6.1.18",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "test": "jest",
-    "test:ci": "jest --ci --runInBand --coverage",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "test": "jest --watch",
     "eject": "react-scripts eject"
   },
   "jest": {
@@ -64,5 +63,14 @@
     "@testing-library/react": "^16.3.0",
     "babel-jest": "^29.7.0",
     "jest": "^27.5.1"
+  },
+
+  "scripts": {
+    "test":"jest",
+    "test:ci":"jest --ci --runInBand --coverage",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
+
   }
 }
