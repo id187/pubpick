@@ -72,13 +72,27 @@ const ReviewWrite = () => {
     setSelectedTags((prev) => prev.filter((t) => t !== tag));
   };
 
-  const tagOptions = Object.keys(tagNameMap);
 
   const handleAddTag = (tag) => {
     if (!selectedTags.includes(tag) && selectedTags.length < maxTags) {
       setSelectedTags((prev) => [...prev, tag]);
     }
   };
+
+  const tagNameMap = {
+    "분위기가 좋아요": "분위기",
+    "가성비가 좋아요": "가성비",
+    "안주가 맛있어요": "안주맛집",
+    "직원들이 친절해요": "직원친절",
+    "화장실이 깨끗해요": "화장실굿",
+    "단체회식하기 좋아요": "단체회식",
+    "2차로 좋아요": "적합2차",
+    "대화하기 좋아요": "대화하기좋음",
+    "그냥 그래요": "그냥그래",
+    "비추천": "비추천"
+  };
+
+  const tagOptions = Object.keys(tagNameMap);
 
   const handleSubmit = async () => {
     if (!selectedPlace?.id) {
@@ -125,18 +139,7 @@ const ReviewWrite = () => {
     }
   };
 
-  const tagNameMap = {
-    "분위기가 좋아요": "분위기",
-    "가성비가 좋아요": "가성비",
-    "안주가 맛있어요": "안주맛집",
-    "직원들이 친절해요": "직원친절",
-    "화장실이 깨끗해요": "화장실굿",
-    "단체회식하기 좋아요": "단체회식",
-    "2차로 좋아요": "적합2차",
-    "대화하기 좋아요": "대화하기좋음",
-    "그냥 그래요": "그냥그래",
-    "비추천": "비추천"
-  };
+  
 
   const mappedTags = selectedTags.map((tag) => tagNameMap[tag]);
 
