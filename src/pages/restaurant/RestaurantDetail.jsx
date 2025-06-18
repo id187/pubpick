@@ -153,13 +153,13 @@ const TagList = styled.div`
 
 const Tag = styled.div`
   display: inline-block;
-  padding: 0.375rem 0.75rem;
-  border: 0.125rem solid #ff6f61;
-  border-radius: 1.875rem;
-  font-size: 0.8125rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid #ff6f61;
+  border-radius: 1rem;
+  font-size: 0.6875rem;
   color: #ff6f61;
   font-weight: 500;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.25rem;
 `;
 
 const Time = styled.p`
