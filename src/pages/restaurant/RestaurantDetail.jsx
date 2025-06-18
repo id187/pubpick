@@ -53,8 +53,11 @@ const RestaurantDetail = () => {
           <Rating>★{restaurant.score}</Rating>
         </TitleRow>
         <TagList>
-          <Tag>{restaurant.cuisine || "정보 없음"}</Tag>
+        {(restaurant.tags || restaurant.tagList || []).map((tag, i) => (
+          <Tag key={i}>#{tag}</Tag>
+        ))}
         </TagList>
+        <Time>{restaurant.cuisine || "정보 없음"}</Time>
         <Time>{restaurant.location || "정보 없음"}</Time>
 
         <ReviewList>
