@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
 import { FaUser } from "react-icons/fa";
 import { instance } from "../../api/instance";
+import { getRestaurantImage } from "../../components/common/restaurantImages";
 
 const RestaurantDetail = () => {
   const { id } = useParams();
@@ -45,7 +46,7 @@ const RestaurantDetail = () => {
       {/* <BackButton to="/">← 메인으로</BackButton>  */}
       <Content>
         <Image
-          src={restaurant.imagePath || "/img/store-default.jpg"}
+          src={getRestaurantImage(restaurant.id) || "/img/store-default.jpg"}
           alt="음식 이미지"
         />
         <TitleRow>
@@ -53,9 +54,9 @@ const RestaurantDetail = () => {
           <Rating>★{restaurant.score}</Rating>
         </TitleRow>
         <TagList>
-        {(restaurant.tags || restaurant.tagList || []).map((tag, i) => (
-          <Tag key={i}>#{tag}</Tag>
-        ))}
+          {(restaurant.tags || restaurant.tagList || []).map((tag, i) => (
+            <Tag key={i}>#{tag}</Tag>
+          ))}
         </TagList>
         <Time>{restaurant.cuisine || "정보 없음"}</Time>
         <Time>{restaurant.location || "정보 없음"}</Time>

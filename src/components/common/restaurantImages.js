@@ -1,0 +1,48 @@
+// restaurantImages.js
+
+export const restaurantImages = {
+  1: "/img/photo-restaurant1.jpg",
+  2: "/img/photo-restaurant2.jpg",
+  3: "/img/photo-restaurant3.jpg",
+  4: "/img/photo-restaurant4.jpg",
+  5: "/img/photo-restaurant5.jpg",
+  6: "/img/photo-restaurant6.jpg",
+  7: "/img/photo-restaurant7.jpg",
+  8: "/img/photo-restaurant8.jpg",
+  9: "/img/photo-restaurant9.jpg",
+  10: "/img/photo-restaurant10.jpg",
+  11: "/img/photo-restaurant11.jpg",
+  12: "/img/photo-restaurant12.jpg",
+  13: "/img/photo-restaurant13.jpg",
+  14: "/img/photo-restaurant14.jpg",
+  15: "/img/photo-restaurant15.jpg",
+  16: "/img/photo-restaurant16.jpg",
+  17: "/img/photo-restaurant17.jpg",
+  18: "/img/photo-restaurant18.jpg",
+  19: "/img/photo-restaurant19.jpg",
+  20: "/img/photo-restaurant20.jpg",
+  고주파: "/img/photo-restaurant1.jpg",
+  홍등롱: "/img/photo-restaurant2.jpg",
+  "열려라 맥주창고": "/img/photo-restaurant3.jpg",
+  서강포차: "/img/photo-restaurant4.jpg",
+  옹고집: "/img/photo-restaurant5.jpg",
+  낭만오지: "/img/photo-restaurant6.jpg",
+  투다리: "/img/photo-restaurant7.jpg",
+  마니마니톡톡: "/img/photo-restaurant8.jpg",
+  카스타운: "/img/photo-restaurant9.jpg",
+  타일: "/img/photo-restaurant10.jpg",
+  주담담: "/img/photo-restaurant11.jpg",
+  한신우동: "/img/photo-restaurant12.jpg",
+  가마치통닭: "/img/photo-restaurant13.jpg",
+  정밥: "/img/photo-restaurant14.jpg",
+  기찻길: "/img/photo-restaurant15.jpg",
+  마포야시장: "/img/photo-restaurant16.jpg",
+  바른치킨: "/img/photo-restaurant17.jpg",
+  모로미쿠시: "/img/photo-restaurant18.jpg",
+  엔티도트: "/img/photo-restaurant19.jpg",
+  철길부산집: "/img/photo-restaurant20.jpg",
+};
+
+export const getRestaurantImage = (idOrName) => {
+  return restaurantImages[idOrName] || "/img/store-default.jpg";
+};

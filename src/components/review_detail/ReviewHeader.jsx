@@ -1,7 +1,7 @@
 // src/components/review/ReviewHeader.jsx
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import "../../styles/color.css";
 
 // Styled 컴포넌트 정의
@@ -38,7 +38,6 @@ const BackIcon = styled.img`
   margin-right: 0.5rem;
 `;
 
-
 const HeaderText = styled.span`
   font-size: 1.2rem;
   margin-left: 0.125rem;
@@ -51,7 +50,7 @@ const ReviewHeader = () => {
     <Header>
       <BackButton onClick={() => navigate(-1)}>
         <BackIcon src="/img/icon_back.png" alt="Back" />
-        <HeaderText>전체 리뷰</HeaderText>
+        <HeaderText>뒤로 가기 </HeaderText>
       </BackButton>
     </Header>
   );

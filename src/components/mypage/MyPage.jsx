@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import ReviewCard from "./ReviewCard";
 import { instance } from "../../api/instance";
 import LogRocket from "logrocket";
+import { getRestaurantImage } from "../common/restaurantImages";
 
 const MyPage = () => {
   const navigate = useNavigate();
@@ -68,14 +69,27 @@ const MyPage = () => {
         localStorage.setItem("email", data.email);
 
         setUser(data);
+        console.log("리뷰 구조 확인:", data.reviews[0]);
+
         setReviews(
-          (data.reviews || []).map((r) => ({
-            ...r,
-            rating: r.rating ?? r.score ?? 0,
-            reviewCount: r.reviewCount ?? r.totalReviews ?? 0,
-            tags: Array.isArray(r.tags) ? r.tags : [],
-            imageSrc: r.imageSrc ?? r.imagePath ?? "/img/store-default.jpg",
-          }))
+          (data.reviews || []).map((r) => {
+            const image = getRestaurantImage(r.placeId ?? r.placeName); // ✅ 경로 받아오고
+            console.log(
+              "리뷰 이미지 경로 확인:",
+              r.placeId ?? r.placeName,
+              image
+            ); // ✅ 콘솔 출력
+
+            return {
+              ...r,
+              name: r.title ?? "(제목 없음)",
+              storeName: r.placeName ?? "(가게 없음)",
+              rating: r.score ?? 0,
+              reviewCount: r.reviewCount ?? r.totalReviews ?? 0,
+              tags: Array.isArray(r.tagList) ? r.tagList : [],
+              imageSrc: image, // ✅ 실제 적용
+            };
+          })
         );
       } catch (err) {
         alert("마이페이지 정보를 불러오지 못했습니다.");
@@ -89,7 +103,7 @@ const MyPage = () => {
   if (!user) return <div>로딩 중...</div>;
 
   return (
-    <div>
+    <PageWrapper>
       <ProfileContainer>
         <LogoutButton onClick={handleLogout}>로그아웃</LogoutButton>
         <ProfileImage> </ProfileImage>
@@ -107,6 +121,7 @@ const MyPage = () => {
               key={review.id}
               id={review.id}
               name={review.name}
+              storeName={review.storeName}
               rating={review.rating}
               reviewCount={review.reviewCount}
               tags={review.tags}
@@ -115,11 +130,16 @@ const MyPage = () => {
           ))
         )}
       </ReviewContainer>
-    </div>
+    </PageWrapper>
   );
 };
 
 export default MyPage;
+
+const PageWrapper = styled.div`
+  min-height: 100vh;
+  background-color: #f4f4f4;
+`;
 
 const ProfileContainer = styled.div`
   display: flex;
@@ -135,11 +155,12 @@ const ProfileContainer = styled.div`
 const LogoutButton = styled.button`
   align-self: flex-end;
   margin-bottom: 0.5rem;
-  background-color: #ccc;
-  padding: 0.5rem 1rem;
+  background-color: var(--gray-200);
+  padding: 0.4rem 0.8rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 0.7rem;
 `;
 
 const ProfileImage = styled.div`
@@ -157,7 +178,7 @@ const ProfileImage = styled.div`
 const InfoBox = styled.div`
   width: 60%;
   padding: 0.05rem;
-  background-color: #e0e0e0;
+  background-color: white;
   border-radius: 4px;
   text-align: center;
 `;

@@ -1,30 +1,33 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 
 const ReviewCard = React.forwardRef(
-  ({ id, name, rating, reviewCount, tags, imageSrc }, ref) => {
+  ({ id, name, storeName, rating, imageSrc, tags }, ref) => {
     const handleClick = () => {
       window.location.href = `/myreview/${id}`;
     };
 
     return (
       <CardContainer ref={ref} onClick={handleClick}>
-        <ImageWrapper>
-          <Image src={imageSrc} alt={name} />
-        </ImageWrapper>
-        <TextWrapper>
-          <Header>
-            <Title>{name}</Title>
-            <Rating>
-              ★ {rating} ({reviewCount} reviews)
-            </Rating>
-          </Header>
-          <TagContainer>
-            {(tags || []).map((tag, idx) => (
-              <Tag key={idx}>{tag}</Tag>
-            ))}
-          </TagContainer>
-        </TextWrapper>
+        <HeaderRow>{storeName}</HeaderRow> {/* ✅ 새 컴포넌트로 분리 */}
+        <ContentWrapper>
+          <ImageWrapper>
+            <Image src={imageSrc} alt={name} />
+          </ImageWrapper>
+          <TextWrapper>
+            <Header>
+              <Title>{name}</Title>
+              <Rating>
+                <Star>★</Star> <Score>{rating}</Score>
+              </Rating>
+            </Header>
+            <TagContainer>
+              {(tags || []).map((tag, idx) => (
+                <Tag key={idx}>{tag}</Tag>
+              ))}
+            </TagContainer>
+          </TextWrapper>
+        </ContentWrapper>
       </CardContainer>
     );
   }
@@ -34,17 +37,29 @@ export default ReviewCard;
 
 const CardContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   border: 1px solid var(--coral-main);
   border-radius: 0.5rem;
   padding: 0.6rem;
   margin-bottom: 0.75rem;
+  cursor: pointer;
   background-color: ${({ isSelected }) =>
     isSelected ? "var(--coral-main)" : "#ffffff"};
-  cursor: pointer;
-  &:hover {
-    box-shadow: inset 0 0 0.375rem rgba(0, 0, 0, 0.2);
-  }
+`;
+
+const HeaderRow = styled.div`
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: var(--gray-900);
+  margin-left: 0.2rem;
+  margin-top: -0.1rem;
+  margin-bottom: -0.1rem;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const ImageWrapper = styled.div`
@@ -76,15 +91,28 @@ const Header = styled.div`
   margin-bottom: 0.25rem;
 `;
 
-const Title = styled.span`
-  font-size: 1.05rem;
-  font-weight: bold;
-  color: var(--gray-800);
+const Title = styled.div`
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--gray-900);
+  margin: 0.15rem 0;
 `;
 
-const Rating = styled.span`
-  font-size: 0.875rem;
-  color: var(--gray-600);
+const Rating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+`;
+
+const Star = styled.span`
+  color: var(--coral-main); /* 주황색 */
+  font-weight: bold;
+  font-size: 0.9rem;
+`;
+
+const Score = styled.span`
+  color: #000000; /* 검정 */
+  font-size: 0.85rem;
 `;
 
 const TagContainer = styled.div`

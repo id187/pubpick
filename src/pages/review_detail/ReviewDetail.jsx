@@ -54,7 +54,7 @@ function ReviewDetail() {
     storeName: review.placeName,
     images: review.images || [],
     content: review.comment,
-    tags: review.tags || [],
+    tags: review.tagList || [],
   };
 
   return (

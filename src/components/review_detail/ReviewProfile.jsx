@@ -6,17 +6,17 @@ import "../../styles/color.css";
 // 스타일드 컴포넌트 정의
 const ReviewProfileContainer = styled.div`
   width: 100%;
-  height: 4rem;
+  height: 5rem;
   display: flex;
   align-items: center;
-  padding: 0.625rem;
+  padding: 0.5rem;
   background-color: #fff;
   border-top: 1px solid #000001;
 `;
 
 const ProfileImage = styled.img`
-  width: 3rem;
-  height: 3rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 50%; /* 원형으로 표현 */
   object-fit: cover;
 `;
@@ -36,7 +36,7 @@ const NameText = styled.span`
 const SubInfoContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.25rem;
+  margin-top: -0.2rem;
 `;
 
 const RatingContainer = styled.div`
@@ -45,8 +45,8 @@ const RatingContainer = styled.div`
 `;
 
 const Star = styled.span`
-  color: ${(props) => (props.active ? "#f5a623" : "#ccc")};
-  font-size: 0.875rem;
+  color: ${(props) => (props.active ? "var(--coral-main)" : "#ccc")};
+  font-size: 1.3rem;
   margin-right: 0.125rem;
 `;
 

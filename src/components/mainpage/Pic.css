@@ -16,7 +16,7 @@
 }
 
 .pic-box-img {
-  width: 4.3rem;
+  width: 5rem;
   aspect-ratio: 1 / 1;
   border-radius: 0.25rem;
   object-fit: cover;
@@ -47,7 +47,18 @@
 
 .pic-box-rating {
   font-size: 0.875rem;
-  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pic-box-star {
+  color: var(--coral-main); /* ✅ 별만 coral */
+  font-weight: bold;
+}
+
+.pic-box-score {
+  color: var(--gray-600); /* ✅ 숫자와 텍스트는 검정 */
 }
 
 .pic-box-tags {
