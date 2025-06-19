@@ -12,10 +12,10 @@ const Pics = ({ data, selectedIndex, onSelect }) => {
   }, [data]);
 
   // data를 id 오름차순으로 정렬한 새 배열 생성
-  const sortedData = useMemo(
-    () => [...data].sort((a, b) => a.id - b.id),
-    [data]
-  );
+  // const sortedData = useMemo(
+  //   () => [...data].sort((a, b) => a.id - b.id),
+  //   [data]
+  // );
 
   // selectedIndex 변경 시 해당 Pic으로 스크롤
   useEffect(() => {
@@ -32,7 +32,7 @@ const Pics = ({ data, selectedIndex, onSelect }) => {
 
   return (
     <div ref={scrollRef} className="pics-container">
-      {sortedData.map((item, idx) => (
+      {data.map((item, idx) => (
         <Pic
           key={item.id}
           ref={(el) => (picRefs.current[idx] = el)}
